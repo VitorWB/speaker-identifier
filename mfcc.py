@@ -5,9 +5,9 @@ import matplotlib.pyplot as plt
 
 # ===================== CONFIGURAÇÕES =====================
 # Caminho base onde estão os áudios
-pasta_base = r'C:\Users\vitor\Documents\TCC\LibriSpeech\dev-clean'
+pasta_base = r'C:\Users\vitor\Documents\Projects\speaker-identifier\LibriSpeech\dev-clean'
 
-subpasta = r'174\168635'
+subpasta = r'vwb-flac'
 
 # Caminho completo da pasta de entrada
 entrada_dir = os.path.join(pasta_base, subpasta)
@@ -15,7 +15,7 @@ entrada_dir = os.path.join(pasta_base, subpasta)
 prefixo_arquivo = '-'.join(subpasta.split(os.sep))
 
 # Caminho de saída onde serão salvas as imagens
-saida_dir = os.path.join(r'C:\Users\vitor\Documents\TCC\imagens mfcc', prefixo_arquivo)
+saida_dir = os.path.join(r'C:\Users\vitor\Documents\Projects\speaker-identifier\imagens mfcc', prefixo_arquivo)
 
 # Número de coeficientes MFCC
 n_mfcc = 13
