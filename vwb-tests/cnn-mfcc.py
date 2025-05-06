@@ -13,11 +13,14 @@ from sklearn.model_selection import train_test_split
 base_dir = r'C:\Users\vitor\Documents\TCC\imagens mfcc'
 img_height = 128
 img_width = 128
-modelo_path = 'modelo_mfcc_locutor.h5'
+modelo_path = 'modelo_identificador_vitor.h5'
 # =========================================================
 
 X = []
 y = []
+
+# Nome da pasta com os áudios do Vitor
+nome_vitor = "vwb-flac"  # ou "84", se for o prefixo de Vitor
 
 # Loop pelas subpastas
 for nome_pasta in os.listdir(base_dir):
@@ -26,12 +29,8 @@ for nome_pasta in os.listdir(base_dir):
     if not os.path.isdir(pasta_completa):
         continue
 
-    if nome_pasta.startswith("84"):
-        rotulo = 0  # Locutor 0
-    elif nome_pasta.startswith("174"):
-        rotulo = 1  # Locutor 1
-    else:
-        continue
+    # Marcar 1 para Vitor, 0 para outros
+    rotulo = 1 if nome_pasta == nome_vitor else 0
 
     for nome_arquivo in os.listdir(pasta_completa):
         if nome_arquivo.endswith(".png"):
@@ -45,20 +44,16 @@ for nome_pasta in os.listdir(base_dir):
 
 # Conversão para numpy arrays
 X = np.array(X).astype("float32") / 255.0
-y = np.array(y)
-y_cat = to_categorical(y)
+y = np.array(y).astype("float32")  # binário
 
 # Divisão treino/teste
-X_train, X_test, y_train, y_test = train_test_split(X, y_cat, test_size=0.2, random_state=42)
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
 
 # ===================== MODELO =====================
-# Carrega modelo existente ou cria novo
 if os.path.exists(modelo_path):
     print("🔁 Carregando modelo existente...")
     model = load_model(modelo_path)
-
-    # ⚠️ Recompila o modelo para garantir que tenha otimizador, perda e métricas
-    model.compile(optimizer='adam', loss='categorical_crossentropy', metrics=['accuracy'])
+    model.compile(optimizer='adam', loss='binary_crossentropy', metrics=['accuracy'])
 else:
     print("🆕 Criando novo modelo...")
     model = Sequential([
@@ -69,9 +64,9 @@ else:
         Flatten(),
         Dense(128, activation='relu'),
         Dropout(0.3),
-        Dense(y_cat.shape[1], activation='softmax')
+        Dense(1, activation='sigmoid')  # Saída binária
     ])
-    model.compile(optimizer='adam', loss='categorical_crossentropy', metrics=['accuracy'])
+    model.compile(optimizer='adam', loss='binary_crossentropy', metrics=['accuracy'])
 
 # ===================== TREINAMENTO =====================
 early_stop = EarlyStopping(patience=3, restore_best_weights=True)
@@ -96,8 +91,8 @@ predictions = model.predict(X_test)
 for i in range(10):
     plt.figure(figsize=(3, 3))
     plt.imshow(X_test[i].reshape(img_height, img_width), cmap='gray')
-    real = np.argmax(y_test[i])
-    pred = np.argmax(predictions[i])
+    real = int(y_test[i])
+    pred = int(predictions[i] >= 0.5)  # binariza saída
     plt.title(f'Real: {real} | Previsto: {pred}')
     plt.axis('off')
     plt.show()
