@@ -5,22 +5,20 @@ import tensorflow as tf
 import matplotlib.pyplot as plt
 from tensorflow.keras.models import Sequential, load_model
 from tensorflow.keras.layers import Conv2D, MaxPooling2D, Flatten, Dense, Dropout
-from tensorflow.keras.utils import to_categorical
 from tensorflow.keras.callbacks import EarlyStopping
 from sklearn.model_selection import train_test_split
+from sklearn.metrics import classification_report, confusion_matrix, roc_curve, auc
 
 # ===================== CONFIGURAÇÕES =====================
 base_dir = r'C:\Users\vitor\Documents\TCC\imagens mfcc'
 img_height = 128
 img_width = 128
 modelo_path = 'modelo_identificador_vitor.h5'
+nome_vitor = "vwb-flac"  # Nome da pasta com as imagens do Vitor
 # =========================================================
 
 X = []
 y = []
-
-# Nome da pasta com os áudios do Vitor
-nome_vitor = "vwb-flac"  # ou "84", se for o prefixo de Vitor
 
 # Loop pelas subpastas
 for nome_pasta in os.listdir(base_dir):
@@ -29,7 +27,6 @@ for nome_pasta in os.listdir(base_dir):
     if not os.path.isdir(pasta_completa):
         continue
 
-    # Marcar 1 para Vitor, 0 para outros
     rotulo = 1 if nome_pasta == nome_vitor else 0
 
     for nome_arquivo in os.listdir(pasta_completa):
@@ -64,7 +61,7 @@ else:
         Flatten(),
         Dense(128, activation='relu'),
         Dropout(0.3),
-        Dense(1, activation='sigmoid')  # Saída binária
+        Dense(1, activation='sigmoid')
     ])
     model.compile(optimizer='adam', loss='binary_crossentropy', metrics=['accuracy'])
 
@@ -85,14 +82,34 @@ print(f"✅ Acurácia no teste: {test_acc:.2f}")
 model.save(modelo_path)
 print(f"💾 Modelo salvo em: {modelo_path}")
 
-# ===================== VISUALIZAÇÃO DE PREVISÕES =====================
-predictions = model.predict(X_test)
+# ===================== PREVISÕES =====================
+predictions = model.predict(X_test).flatten()  # mantém como vetor 1D
 
-for i in range(10):
-    plt.figure(figsize=(3, 3))
-    plt.imshow(X_test[i].reshape(img_height, img_width), cmap='gray')
-    real = int(y_test[i])
-    pred = int(predictions[i] >= 0.5)  # binariza saída
-    plt.title(f'Real: {real} | Previsto: {pred}')
-    plt.axis('off')
-    plt.show()
+# Binariza as previsões
+y_pred_bin = (predictions >= 0.5).astype(int)
+y_test_flat = y_test.flatten()
+
+# ===================== RELATÓRIO =====================
+print("=== Classification Report ===")
+print(classification_report(y_test_flat, y_pred_bin, target_names=["Outro", "Vitor"]))
+
+print("=== Confusion Matrix ===")
+cm = confusion_matrix(y_test_flat, y_pred_bin)
+print(cm)
+
+print("Valores únicos em y_test:", np.unique(y_test_flat))
+print("Valores únicos em predictions binárias:", np.unique(y_pred_bin))
+
+# ===================== CURVA ROC =====================
+fpr, tpr, thresholds = roc_curve(y_test_flat, predictions)
+roc_auc = auc(fpr, tpr)
+
+plt.figure(figsize=(6, 6))
+plt.plot(fpr, tpr, label=f'ROC curve (AUC = {roc_auc:.2f})')
+plt.plot([0, 1], [0, 1], 'k--', label='Random')
+plt.xlabel('Taxa de Falso Positivo (FPR)')
+plt.ylabel('Taxa de Verdadeiro Positivo (TPR)')
+plt.title('Curva ROC')
+plt.legend(loc='lower right')
+plt.grid()
+plt.show()

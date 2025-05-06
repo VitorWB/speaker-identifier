@@ -7,7 +7,7 @@ import matplotlib.pyplot as plt
 # Caminho base onde estão os áudios
 pasta_base = r'C:\Users\vitor\Documents\Projects\speaker-identifier\LibriSpeech\dev-clean'
 
-subpasta = r'vwb-flac'
+subpasta = r'422\122949'
 
 # Caminho completo da pasta de entrada
 entrada_dir = os.path.join(pasta_base, subpasta)
