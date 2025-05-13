@@ -10,7 +10,7 @@ from tensorflow.keras.callbacks import EarlyStopping
 from sklearn.model_selection import train_test_split
 
 # ===================== CONFIGURAÇÕES =====================
-base_dir = r'C:\Users\vitor\Documents\TCC\imagens mfcc'
+base_dir = r'C:\Users\vitor\Documents\Projects\speaker-identifier\imagens mfcc'
 img_height = 128
 img_width = 128
 modelo_path = 'modelo_mfcc_locutor.h5'
