@@ -7,56 +7,57 @@ import matplotlib.pyplot as plt
 # Caminho base onde estão os áudios
 pasta_base = r'C:\Users\vitor\Documents\Projects\speaker-identifier\LibriSpeech\dev-clean'
 
-subpasta = r'422\122949'
-
-# Caminho completo da pasta de entrada
-entrada_dir = os.path.join(pasta_base, subpasta)
-
-prefixo_arquivo = '-'.join(subpasta.split(os.sep))
-
-# Caminho de saída onde serão salvas as imagens
-saida_dir = os.path.join(r'C:\Users\vitor\Documents\Projects\speaker-identifier\imagens mfcc', prefixo_arquivo)
+# Caminho base para salvar as imagens
+saida_base = r'C:\Users\vitor\Documents\Projects\speaker-identifier\imagens mfcc'
 
 # Número de coeficientes MFCC
 n_mfcc = 13
 # =========================================================
 
-# Cria pasta de saída, se necessário
-os.makedirs(saida_dir, exist_ok=True)
+# Loop recursivo por todas as subpastas e arquivos .flac
+for root, dirs, files in os.walk(pasta_base):
+    arquivos_flac = sorted([f for f in files if f.endswith('.flac')])
 
-# Lista os arquivos .flac na pasta
-arquivos_flac = sorted([f for f in os.listdir(entrada_dir) if f.endswith('.flac')])
+    if not arquivos_flac:
+        continue  # pula se não houver arquivos .flac
 
-print(f"Encontrados {len(arquivos_flac)} arquivos .flac na pasta {entrada_dir}")
+    # Determina o caminho relativo da subpasta para organizar as saídas
+    caminho_relativo = os.path.relpath(root, pasta_base)
+    prefixo_arquivo = '-'.join(caminho_relativo.split(os.sep))
 
-# Loop pelos arquivos
-for nome_base in arquivos_flac:
-    caminho_audio = os.path.join(entrada_dir, nome_base)
+    # Caminho de saída
+    saida_dir = os.path.join(saida_base, prefixo_arquivo)
+    os.makedirs(saida_dir, exist_ok=True)
 
-    try:
-        # Carregar o áudio
-        y, sr = librosa.load(caminho_audio, sr=None)
+    print(f"Processando {len(arquivos_flac)} arquivos em {root}")
 
-        # Extrair MFCC
-        mfccs = librosa.feature.mfcc(y=y, sr=sr, n_mfcc=n_mfcc)
+    for nome_base in arquivos_flac:
+        caminho_audio = os.path.join(root, nome_base)
 
-        # Plotar MFCC
-        plt.figure(figsize=(10, 4))
-        librosa.display.specshow(mfccs, x_axis='time', sr=sr)
-        plt.colorbar(label='Amplitude')
-        plt.title(f'MFCC - {nome_base}')
-        plt.xlabel('Tempo')
-        plt.ylabel('Coeficiente MFCC')
+        try:
+            # Carregar o áudio
+            y, sr = librosa.load(caminho_audio, sr=None)
 
-        # Caminho de saída da imagem
-        nome_imagem = nome_base.replace('.flac', '.png')
-        caminho_saida = os.path.join(saida_dir, nome_imagem)
+            # Extrair MFCC
+            mfccs = librosa.feature.mfcc(y=y, sr=sr, n_mfcc=n_mfcc)
 
-        # Salvar e fechar
-        plt.savefig(caminho_saida)
-        plt.close()
+            # Plotar MFCC
+            plt.figure(figsize=(10, 4))
+            librosa.display.specshow(mfccs, x_axis='time', sr=sr)
+            plt.colorbar(label='Amplitude')
+            plt.title(f'MFCC - {nome_base}')
+            plt.xlabel('Tempo')
+            plt.ylabel('Coeficiente MFCC')
 
-        print(f"Imagem salva: {caminho_saida}")
+            # Caminho de saída da imagem
+            nome_imagem = nome_base.replace('.flac', '.png')
+            caminho_saida = os.path.join(saida_dir, nome_imagem)
 
-    except Exception as e:
-        print(f"Erro ao processar {nome_base}: {e}")
+            # Salvar e fechar
+            plt.savefig(caminho_saida)
+            plt.close()
+
+            print(f"Imagem salva: {caminho_saida}")
+
+        except Exception as e:
+            print(f"Erro ao processar {nome_base}: {e}")
