@@ -3,8 +3,8 @@ import cv2
 import numpy as np
 from tensorflow.keras.models import load_model
 
-img_dir = r'C:\Users\vitor\Documents\Projects\speaker-identifier\teste'
-modelo_path = 'modelo_identificador_vitor.h5'
+img_dir = r'/Users/vitorwolffbordignon/Documents/projetos/speaker-identifier/mfcc-vitor'
+modelo_path = '/Users/vitorwolffbordignon/Documents/projetos/speaker-identifier/vwb-tests/modelo_identificador_vitor.h5'
 img_height, img_width = 128, 128
 
 model = load_model(modelo_path)

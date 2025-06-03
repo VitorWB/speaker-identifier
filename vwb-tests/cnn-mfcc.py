@@ -10,7 +10,7 @@ from sklearn.model_selection import train_test_split
 from sklearn.metrics import classification_report, confusion_matrix, roc_curve, auc
 
 # ===================== CONFIGURAÇÕES =====================
-base_dir = r'C:\Users\vitor\Documents\Projects\speaker-identifier\imagens mfcc'
+base_dir = r'/Users/vitorwolffbordignon/Documents/projetos/speaker-identifier/imagens mfcc'
 img_height = 128
 img_width = 128
 modelo_path = 'modelo_identificador_vitor.h5'
@@ -58,18 +58,20 @@ else:
         MaxPooling2D((2, 2)),
         Conv2D(64, (3, 3), activation='relu'),
         MaxPooling2D((2, 2)),
+        Conv2D(128, (3, 3), activation='relu'),
+        MaxPooling2D((2, 2)),
         Flatten(),
-        Dense(128, activation='relu'),
-        Dropout(0.3),
+        Dense(256, activation='relu'),
+        Dropout(0.4),
         Dense(1, activation='sigmoid')
     ])
     model.compile(optimizer='adam', loss='binary_crossentropy', metrics=['accuracy'])
 
 # ===================== TREINAMENTO =====================
-early_stop = EarlyStopping(patience=3, restore_best_weights=True)
+early_stop = EarlyStopping(patience=10, restore_best_weights=True)
 
 model.fit(X_train, y_train,
-          epochs=50,
+          epochs=100,
           batch_size=32,
           validation_split=0.1,
           callbacks=[early_stop])

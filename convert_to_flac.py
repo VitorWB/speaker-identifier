@@ -2,10 +2,10 @@ import os
 import subprocess
 
 # Pasta com os arquivos .m4a
-entrada_dir = r'C:\Users\vitor\Documents\Projects\speaker-identifier\LibriSpeech\dev-clean\vwb'
+entrada_dir = r'/Users/vitorwolffbordignon/Documents/projetos/speaker-identifier/vwb-tests/test'
 
 # Pasta onde os arquivos .flac serão salvos (pode ser a mesma)
-saida_dir = r'C:\Users\vitor\Documents\Projects\speaker-identifier\LibriSpeech\dev-clean\vwb-flac'
+saida_dir = r'/Users/vitorwolffbordignon/Documents/projetos/speaker-identifier/vwb-tests/test'
 
 # Cria a pasta de saída se necessário
 os.makedirs(saida_dir, exist_ok=True)

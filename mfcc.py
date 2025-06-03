@@ -5,10 +5,10 @@ import matplotlib.pyplot as plt
 
 # ===================== CONFIGURAÇÕES =====================
 # Caminho base onde estão os áudios
-pasta_base = r'C:\Users\vitor\Documents\Projects\speaker-identifier\LibriSpeech\dev-clean'
+pasta_base = r'/Users/vitorwolffbordignon/Documents/projetos/speaker-identifier/LibriSpeech/dev-other'
 
 # Caminho base para salvar as imagens
-saida_base = r'C:\Users\vitor\Documents\Projects\speaker-identifier\imagens mfcc'
+saida_base = r'/Users/vitorwolffbordignon/Documents/projetos/speaker-identifier/mfcc-dev-other'
 
 # Número de coeficientes MFCC
 n_mfcc = 13
