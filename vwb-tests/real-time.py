@@ -33,18 +33,20 @@ y, _ = librosa.effects.trim(y, top_db=20)
 mfcc = librosa.feature.mfcc(y=y, sr=sr, n_mfcc=n_mfcc)
 mfcc = librosa.util.fix_length(mfcc, size=n_frames_pad, axis=1)
 
-# Salvar imagem MFCC no estilo do treinamento
-plt.figure(figsize=(10, 4))
+# Salvar imagem MFCC com o mesmo estilo do treinamento
+plt.figure(figsize=(10, 4))  # mesmo formato usado no treino
 librosa.display.specshow(mfcc, x_axis='time', sr=sr)
 plt.colorbar(label='Amplitude')
-plt.title(f'MFCC - tempo real')
+plt.title('MFCC - tempo real')
 plt.xlabel('Tempo')
 plt.ylabel('Coeficiente MFCC')
-plt.savefig(temp_img)  # salvar normalmente, sem recorte
+plt.savefig(temp_img)  # sem recortes ou compressão
 plt.close()
 
-# 📷 Carregar imagem e preparar para modelo
+# 📷 Carregar imagem gerada e preparar para modelo
 img = cv2.imread(temp_img, cv2.IMREAD_GRAYSCALE)
+
+# ⚠️ IMPORTANTE: fazer resize para garantir compatibilidade com o modelo
 img = cv2.resize(img, (img_width, img_height))
 img = img.reshape((1, img_height, img_width, 1)).astype("float32") / 255.0
 

@@ -68,10 +68,10 @@ else:
     model.compile(optimizer='adam', loss='binary_crossentropy', metrics=['accuracy'])
 
 # ===================== TREINAMENTO =====================
-early_stop = EarlyStopping(patience=10, restore_best_weights=True)
+early_stop = EarlyStopping(patience=5, restore_best_weights=True)
 
 model.fit(X_train, y_train,
-          epochs=100,
+          epochs=50,
           batch_size=32,
           validation_split=0.1,
           callbacks=[early_stop])

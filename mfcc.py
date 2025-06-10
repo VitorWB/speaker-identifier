@@ -5,13 +5,13 @@ import matplotlib.pyplot as plt
 
 # ===================== CONFIGURAÇÕES =====================
 # Caminho base onde estão os áudios
-pasta_base = r'/Users/vitorwolffbordignon/Documents/projetos/speaker-identifier/LibriSpeech/dev-other'
+pasta_base = r'/Users/vitorwolffbordignon/Documents/projetos/speaker-identifier/teste adriane'
 
 # Caminho base para salvar as imagens
-saida_base = r'/Users/vitorwolffbordignon/Documents/projetos/speaker-identifier/mfcc-dev-other'
+saida_base = r'/Users/vitorwolffbordignon/Documents/projetos/speaker-identifier/teste adriane'
 
 # Número de coeficientes MFCC
-n_mfcc = 13
+n_mfcc = 50
 # =========================================================
 
 # Loop recursivo por todas as subpastas e arquivos .flac
@@ -42,12 +42,12 @@ for root, dirs, files in os.walk(pasta_base):
             mfccs = librosa.feature.mfcc(y=y, sr=sr, n_mfcc=n_mfcc)
 
             # Plotar MFCC
-            plt.figure(figsize=(10, 4))
+            # plt.figure(figsize=(10, 4))
             librosa.display.specshow(mfccs, x_axis='time', sr=sr)
-            plt.colorbar(label='Amplitude')
-            plt.title(f'MFCC - {nome_base}')
-            plt.xlabel('Tempo')
-            plt.ylabel('Coeficiente MFCC')
+            # plt.colorbar(label='Amplitude')
+            # plt.title(f'MFCC - {nome_base}')
+            # plt.xlabel('Tempo')
+            # plt.ylabel('Coeficiente MFCC')
 
             # Caminho de saída da imagem
             nome_imagem = nome_base.replace('.flac', '.png')
